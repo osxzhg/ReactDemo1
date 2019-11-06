@@ -9,12 +9,6 @@ export class Test extends Component {
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
-
-        //fetch('api1/Customer/Index')
-        //    .then(response => response.json())
-        //    .then(data => {
-        //        this.setState({ customers: data, loading: false });
-        //    });
     }
 
     //static renderCustomersTable(customers) {
@@ -43,19 +37,12 @@ export class Test extends Component {
     }
 
     loadData() {
-        //ajax call logic
+        //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
         fetch('api/Customers/GetCustomers')
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (myJson) {
-                console.log(myJson);
-            })
-        //fetch('api/Customers/GetCustomers')
-        //    .then(response => { console.log(response); response.json() })
-        //    .then(data => {
-        //        this.setState({ customers: data});
-        //    });
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ customers: data});
+            });
     }
 
     update(id) {
@@ -71,20 +58,20 @@ export class Test extends Component {
 
         let tableData = null;
 
-        //if (customers != "") {
-        //    tableData = customers.map(customer =>
-        //        <tr key={customer.id}>
-        //            <td className="two wide">{customer.name}</td>
-        //            <td className="ten wide">{customer.address}</td>
-        //            <td className="four wide">
-        //                <i className="outline write icon" onClick={
-        //                    this.update.bind(this, customer.Id)}></i>
-        //                <i className="remove icon" onClick=
-        //                    {this.delete.bind(this, customer.Id)}></i>
-        //            </td>
-        //        </tr>
-        //    )
-        //}
+        if (customers != "") {
+            tableData = customers.map(customer =>
+                <tr key={customer.id}>
+                    <td className="two wide">{customer.name}</td>
+                    <td className="ten wide">{customer.address}</td>
+                    <td className="four wide">
+                        <i className="outline write icon" onClick={
+                            this.update.bind(this, customer.Id)}></i>
+                        <i className="remove icon" onClick=
+                            {this.delete.bind(this, customer.Id)}></i>
+                    </td>
+                </tr>
+            )
+        }
         return (
             <React.Fragment>
                 <table className="ui striped table">

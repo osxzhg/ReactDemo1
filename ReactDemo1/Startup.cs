@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using ReactDemo1.Models;
 
 namespace ReactDemo1
 {
@@ -21,7 +23,8 @@ namespace ReactDemo1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            services.AddDbContext<OnbordingContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

@@ -34,7 +34,8 @@ export class GetCustomer extends Component {
     //}
 
     componentDidMount() {
-        this.loadData();
+       // this.loadData();
+        this.update(1);
     }
 
     loadData() {
@@ -47,7 +48,14 @@ export class GetCustomer extends Component {
     }
 
     update(id) {
-        //ajax call logic
+        //this.setState({ customers: { "id": 1, "name": "John", "address": "Avondale", "sales": [] } });
+                //ajax call logic
+        fetch('api/Customers/1', {
+            method: 'PUT',
+            body: JSON.stringify({ "id": 1, "name": "Hans", "address": "ACG" }), headers: { 'Content-type': 'application/json' }
+        })
+            .then(data => console.log(data))
+            .catch((err) => console.log(err))
     }
 
     delete(id) {

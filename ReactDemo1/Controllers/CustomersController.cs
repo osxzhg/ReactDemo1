@@ -34,15 +34,14 @@ namespace ReactDemo1.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             var customers = await _context.Customers.FindAsync(id);
 
-            if (customers == null)
-            {
-                return NotFound();
-            }
+                if (customers == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(customers);
+                return Ok(customers);
         }
 
         // PUT: api/Customers/5

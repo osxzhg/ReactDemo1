@@ -38,6 +38,11 @@ export class NavMenu extends Component {
                 <Glyphicon glyph='test' /> Nick test
               </NavItem>
             </LinkContainer>
+            <LinkContainer to={'/getcustomer'}>
+              <NavItem>
+                <Glyphicon glyph='customer' /> Customer
+              </NavItem>
+            </LinkContainer>
 
           </Nav>
         </Navbar.Collapse>

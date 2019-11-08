@@ -6,7 +6,7 @@ export class GetCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customers: {}, };
+            customers: {}, refreshflag: 0};
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
@@ -52,10 +52,10 @@ export class GetCustomer extends Component {
                 //ajax call logic
         fetch('api/Customers/1', {
             method: 'PUT',
-            body: JSON.stringify({ "id": 1, "name": "Hans", "address": "ACG" }), headers: { 'Content-type': 'application/json' }
+            body: JSON.stringify({ "id": 2, "name": "Hans", "address": "Eden" }), headers: { 'Content-type': 'application/json' }
         })
-            .then(data => console.log(data))
-            .catch((err) => console.log(err))
+        //this.loadData();
+        .then(response => { if (response.ok) { this.loadData() } })
     }
 
     delete(id) {
@@ -64,6 +64,7 @@ export class GetCustomer extends Component {
 
     render() {
         let customers = this.state.customers;
+        let refreshflag = this.state.refreshflag;
 
         let tableData = null;
 
@@ -90,6 +91,7 @@ export class GetCustomer extends Component {
                </table>
             </React.Fragment>
         )
+        
 
     }
 }

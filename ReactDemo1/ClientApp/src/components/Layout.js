@@ -11,22 +11,23 @@ export class Layout extends Component {
     render() {
         return (
 
+
             <div>
-                <Menu inverted fixed="top" >
-                    <Menu.Item header>React</Menu.Item>
-                    <Menu.Item as={Link} name='customers' to='/Test'>
-                        Customers
-                </Menu.Item>
-                    <Menu.Item as={Link} name='products' to='products'>
-                        Products
-                </Menu.Item>
-                    <Menu.Item as={Link} name='store' to='store'>
-                        Stores
-                </Menu.Item>
-                </Menu>
-
-                {this.props.children}
-
+                        <Menu inverted fixed="top" >
+                            <Menu.Item header>React</Menu.Item>
+                            <Menu.Item as={Link} name='customers' to='/Test'>
+                                Customers
+                            </Menu.Item>
+                            <Menu.Item as={Link} name='products' to='products'>
+                                Products
+                             </Menu.Item>
+                            <Menu.Item as={Link} name='store' to='store'>
+                                Stores
+                            </Menu.Item>
+                        </Menu>
+                <div id="content" class="ui segment">
+                        {this.props.children}
+                </div>
                 <div class="footer">
                     <hr />
                     &copy; 2018 - Zhiguang Xu

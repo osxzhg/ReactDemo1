@@ -6,7 +6,7 @@ export class GetCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customers: {}, refreshflag: 0};
+            customers: {}};
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
@@ -34,13 +34,13 @@ export class GetCustomer extends Component {
     //}
 
     componentDidMount() {
-       // this.loadData();
-        this.update(1);
+       this.loadData();
+       // this.update(1);
     }
 
     loadData() {
         //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
-        fetch('api/Customers/1')
+        fetch('api/Customers')
             .then(response => response.json())
             .then(data => {
                 this.setState({ customers: data });

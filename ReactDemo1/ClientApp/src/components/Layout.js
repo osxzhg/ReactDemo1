@@ -1,53 +1,38 @@
 import React, { Component } from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
-import { Button, Icon, Label, Message, Form, Checkbox} from 'semantic-ui-react'
+import { Button, Icon, Label, Message, Form, Menu } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import './Layout.css'
 
 
 export class Layout extends Component {
-  displayName = Layout.name
+    displayName = Layout.name
+    render() {
+        return (
 
-  render() {
-    return (
-        <div>
-            <h2>Buttons</h2>
-            <Button>Click Here</Button>
-            <Button primary>New Customer</Button>
-            <Button secondary>Secondary</Button>
-            <Button icon color="orange">
-              <Icon name="edit" />
-              edit
-              </Button>
-              <Button icon color="red">
-              <Icon name="delete" />
-              delete
-              </Button>
-              <h2>Label</h2>
-              <Label>
-                <Icon name="mail" />23
-              </Label>
-              <input type="text" placeholder="First name" />
-              <Label pointing>Please enter a value</Label>
-              <h2>Message</h2>
-              <Message waring>
-                <Message.Header>
-                  You must register before you can do that
-                </Message.Header>
-                <p>Visit our registration page, then try again.</p>
-              </Message>
-              <h2>Forms</h2>
-              <Form>
-                <Form.Field>
-                  <label>Name</label>
-                  <input placeholder="Name" />
-                  <label>Address</label>
-                  <input placeholder="Address" />
-                  <Form.Field>
-                    <Button type="submit">Submit</Button>
-                  </Form.Field>
-                </Form.Field>
-              </Form>
-        </div>
-    );
-  }
+            <div>
+                <Menu inverted fixed="top" >
+                    <Menu.Item header>React</Menu.Item>
+                    <Menu.Item as={Link} name='customers' to='/Test'>
+                        Customers
+                </Menu.Item>
+                    <Menu.Item as={Link} name='products' to='products'>
+                        Products
+                </Menu.Item>
+                    <Menu.Item as={Link} name='store' to='store'>
+                        Stores
+                </Menu.Item>
+                </Menu>
+
+                {this.props.children}
+
+                <div class="footer">
+                    <hr />
+                    &copy; 2018 - Zhiguang Xu
+                 </div>
+
+            </div>
+        );
+    }
 }

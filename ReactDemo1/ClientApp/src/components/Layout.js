@@ -13,20 +13,20 @@ export class Layout extends Component {
 
 
             <div>
-                        <Menu inverted fixed="top" >
-                            <Menu.Item header>React</Menu.Item>
-                            <Menu.Item as={Link} name='customers' to='/Test'>
-                                Customers
-                            </Menu.Item>
-                            <Menu.Item as={Link} name='products' to='products'>
-                                Products
-                             </Menu.Item>
-                            <Menu.Item as={Link} name='store' to='store'>
-                                Stores
-                            </Menu.Item>
-                        </Menu>
+                <Menu inverted fixed="top" >
+                    <Menu.Item header>React</Menu.Item>
+                    <Menu.Item as={Link} name='customers' to='/getcustomer'>
+                        Customers
+                     </Menu.Item>
+                    <Menu.Item as={Link} name='products' to='/test'>
+                        Products
+                    </Menu.Item>
+                    <Menu.Item as={Link} name='store' to='store'>
+                        Stores
+                    </Menu.Item>
+                </Menu>
                 <div id="content" class="ui segment">
-                        {this.props.children}
+                    {this.props.children}
                 </div>
                 <div class="footer">
                     <hr />

@@ -5,19 +5,41 @@ export class GetCustomer extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { customers: [], };
+        this.state = { customers: [], model_id: null};
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
-        this.delete1 = this.delete1.bind(this);
+        this.handleOpenCreate = this.handleOpenCreate.bind(this);
+        this.handleCloseCreate = this.handleCloseCreate.bind(this);
+        this.handleOpenDelete = this.handleOpenDelete.bind(this);
+        this.handleCloseDelete = this.handleCloseDelete.bind(this);
+        this.handleOpenEdit = this.handleOpenEdit.bind(this);
+        this.handleCloseEdit = this.handleCloseEdit.bind(this);
     }
-    handleOpen = () => {
-        this.setState({model_open: true})
+    handleOpenCreate() {
+        this.setState({ create_model_open: true });
     }
 
-    handleClose = () => {
-        this.setState({model_open: false})
+    handleCloseCreate() {
+        this.setState({ create_model_open: false });
     }
+    handleOpenEdit(i) {
+        this.setState({ edit_model_open: true });
+    }
+
+    handleCloseEdit() {
+        this.setState({ edit_model_open: false });
+    }
+    handleOpenDelete(i) {
+        this.setState({ delete_model_open: true });
+        this.setState({model_id: i})
+    }
+
+    handleCloseDelete() {
+        this.setState({ delete_model_open: false });
+    }
+
+
     //static renderCustomersTable(customers) {
     //    return (
     //        <table className='table'>
@@ -74,28 +96,40 @@ export class GetCustomer extends Component {
             method: 'DELETE',
             headers: { 'Content-type': 'application/json' }
         })
-            //this.loadData();
-            .then(response => { if (response.ok) { this.loadData() } })
-        //api / Customers / 5
-    }
-    delete1(id) {
-        //ajax call logic
-        console.log("delete");
-        var url = "api/Customers/" + id;
-        console.log(url);
-        fetch(url, {
-            method: 'DELETE',
-            headers: { 'Content-type': 'application/json' }
+            .then(response => {
+                this.setState({ delete_model_open: false });
+                this.loadData();    
+            }).catch(error => {
+                console.log('There has been a problem with your fetch operation: ', error.message)
         })
-            //this.loadData();
-            .then(response => { if (response.ok) { this.loadData() } })
-        //api / Customers / 5
+        
     }
 
     render() {
         let customers = this.state.customers;
 
         let tableData = null;
+
+        let newbtn = null;
+        let testbtn = null;
+
+        newbtn = 
+            <Modal
+                trigger={<Button primary content="New Customer" onClick={this.handleOpenCreate} />}
+                open={this.state.create_model_open}
+                onClose={this.handleCloseCreate}
+            >
+                <Modal.Content>
+                    <p>
+                        Please upload a valid file.
+                                   {this.state.model_id}
+                    </p>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color='black' content="cancel" onClick={this.handleCloseCreate} />
+                <Button color='red' content="delete" icon="times" labelPosition="right" onClick={this.delete.bind(this, null)} />
+                </Modal.Actions>
+            </Modal>
 
         if (customers != "") {
             tableData = customers.map(customer =>
@@ -104,7 +138,7 @@ export class GetCustomer extends Component {
                     <td className="four wide">{customer.address}</td>
                     <td className="four wide">
                         <Modal
-                            trigger={<Button>Basic Modal</Button>}
+                            trigger={<Button color='yellow' content="EDIT" icon="edit"/>}
                             basic size='small'>
                             <Header icon='archive' content='Archive Old Messages' />
                             <Modal.Content>
@@ -123,28 +157,20 @@ export class GetCustomer extends Component {
                             </Modal.Actions>
                         </Modal>
                     </td>
-                    <td className="two wide">
-                        <i className="remove icon" onClick=
-                            {this.delete.bind(this, customer.id)}></i>
-                    </td>
-                    <td className="two wide">
+                    <td className="four wide">
                         <Modal
-                            trigger={<Button onClick={this.handleOpen} > test</Button>}
-                            open={this.state.model_open}
-                            onClose={this.handleClose}
+                            trigger={<Button color='red' content="DELETE" icon="trash" onClick={this.handleOpenDelete.bind(this, customer.id)} />}
+                            open={this.state.delete_model_open}
+                            onClose={this.handleCloseDelete}
+                            size={"tiny"}
                         >
+                            <Modal.Header>Delete customer</Modal.Header>
                             <Modal.Content>
-                                <p>
-                                   Please upload a valid file. 
-                                </p>
+                                <Header size='medium'>Are you sure?</Header>
                             </Modal.Content>
                             <Modal.Actions>
-                                <Button basic color='red' inverted onClick={this.handleClose} >
-                                    <Icon name='remove' /> No
-                                </Button>
-                                <Button color='green' inverted onClick={this.delete1.bind(this, customer.id)}>
-                                    <Icon name='checkmark' /> Yes
-                                </Button>
+                                <Button color='black' content="cancel" onClick={this.handleCloseDelete} />
+                                <Button color='red' content="delete" icon="times" labelPosition="right" onClick={this.delete.bind(this, this.state.model_id)} />
                             </Modal.Actions>
                         </Modal>
                     </td>
@@ -153,12 +179,13 @@ export class GetCustomer extends Component {
         }
         return (
             <React.Fragment>
-                <table className="ui striped table">
+                {testbtn}
+                {newbtn}
+                <table className="ui celled striped table">
                     <thead>
                         <tr>
                             <th className="four wide">Name</th>
                             <th className="four wide">Address</th>
-                            <th className="four wide">Actions</th>
                             <th className="four wide">Actions</th>
                             <th className="four wide">Actions</th>
                         </tr>

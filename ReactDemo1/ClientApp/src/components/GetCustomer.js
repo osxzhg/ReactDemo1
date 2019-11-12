@@ -5,16 +5,19 @@ export class GetCustomer extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { customers: [], model_id: null};
+        this.state = { customers: [], model_id: null, value: ''};
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
+        this.create = this.create.bind(this);
         this.handleOpenCreate = this.handleOpenCreate.bind(this);
         this.handleCloseCreate = this.handleCloseCreate.bind(this);
         this.handleOpenDelete = this.handleOpenDelete.bind(this);
         this.handleCloseDelete = this.handleCloseDelete.bind(this);
         this.handleOpenEdit = this.handleOpenEdit.bind(this);
         this.handleCloseEdit = this.handleCloseEdit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
@@ -37,6 +40,14 @@ export class GetCustomer extends Component {
 
     handleCloseDelete() {
         this.setState({ delete_model_open: false });
+    }
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+    }
+    handleSubmit(event) {
+        //alert("message" + this.state.value);
+        event.preventDefault();
+        this.handleCloseCreate();
     }
 
 
@@ -74,6 +85,9 @@ export class GetCustomer extends Component {
             });
     }
 
+    create() {
+        console.log("create")
+    }
     update(id) {
         //this.setState({ customers: { "id": 1, "name": "John", "address": "Avondale", "sales": [] } });
                 //ajax call logic
@@ -122,12 +136,22 @@ export class GetCustomer extends Component {
                 <Modal.Content>
                     <p>
                         Please upload a valid file.
-                                   {this.state.model_id}
-                    </p>
+                </p>
+                <Form>
+                    <Form.Field>
+                        <label>NAME</label>
+                        <input placeholder='Name' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>ADDRESS</label>
+                        <input placeholder='Address' />
+                    </Form.Field>
+                    <Button color='black' content="cancel" onClick={this.handleCloseCreate} />
+                    <Button color='red' content="delete" icon="times" labelPosition="right" onClick={this.handleSubmit} /> 
+                </Form>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button color='black' content="cancel" onClick={this.handleCloseCreate} />
-                <Button color='red' content="delete" icon="times" labelPosition="right" onClick={this.delete.bind(this, null)} />
+
                 </Modal.Actions>
             </Modal>
 
@@ -180,7 +204,10 @@ export class GetCustomer extends Component {
         return (
             <React.Fragment>
                 {testbtn}
-                {newbtn}
+                <div>
+                    {newbtn}
+                    <br></br>
+                    <br></br>
                 <table className="ui celled striped table">
                     <thead>
                         <tr>
@@ -193,7 +220,8 @@ export class GetCustomer extends Component {
                     <tbody>
                         {tableData}
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </React.Fragment>
         )     
 

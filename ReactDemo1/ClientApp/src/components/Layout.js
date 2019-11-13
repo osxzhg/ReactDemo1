@@ -7,8 +7,23 @@ import './Layout.css'
 
 
 export class Layout extends Component {
+    constructor(props) {
+        super(props);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+        this.state = { temperature: '', scale: 'c' };
+    }
     displayName = Layout.name
+    handleCelsiusChange(temperature) {
+        this.setState({ scale: 'c', temperature });
+    }
+
+    handleFahrenheitChange(temperature) {
+        this.setState({ scale: 'f', temperature });
+    }
     render() {
+
+
         return (
 
 
@@ -25,7 +40,8 @@ export class Layout extends Component {
                         Stores
                     </Menu.Item>
                 </Menu>
-                <div id="content" class="ui segment">
+               
+                <div id="content" class="basic ui segment">
                     {this.props.children}
                 </div>
                 <div class="footer">
@@ -37,3 +53,4 @@ export class Layout extends Component {
         );
     }
 }
+

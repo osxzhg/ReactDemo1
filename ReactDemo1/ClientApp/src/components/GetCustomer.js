@@ -1,11 +1,24 @@
 ﻿import React, { Component } from 'react';
-import { Button, Icon, Label, Message, Form, Menu, Header, Modal } from 'semantic-ui-react';
+import { Button, Icon, Label, Message, Form, Menu, Header, Modal, Pagination, Dropdown } from 'semantic-ui-react';
+import './GetCustomer.css'
 export class GetCustomer extends Component {
     displayName = GetCustomer.name
 
+
+
     constructor(props) {
         super(props);
-        this.state = { customers: [], model_id: null, value: ''};
+        this.state = {
+            customers: [], model_id: null, value: '', customer_name: '', customer_address: '',
+            activePage: 1,
+            boundaryRange: 1,
+            siblingRange: 1,
+            showEllipsis: false,
+            showFirstAndLastNav: false,
+            showPreviousAndNextNav: false,
+            totalPages: 1,
+            itemPerPage: 10
+        };
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
@@ -18,6 +31,7 @@ export class GetCustomer extends Component {
         this.handleCloseEdit = this.handleCloseEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleEditSubmit = this.handleEditSubmit.bind(this);
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
@@ -28,6 +42,7 @@ export class GetCustomer extends Component {
     }
     handleOpenEdit(i) {
         this.setState({ edit_model_open: true });
+        this.setState({ model_id: i })
     }
 
     handleCloseEdit() {
@@ -35,7 +50,7 @@ export class GetCustomer extends Component {
     }
     handleOpenDelete(i) {
         this.setState({ delete_model_open: true });
-        this.setState({model_id: i})
+        this.setState({ model_id: i })
     }
 
     handleCloseDelete() {
@@ -43,37 +58,40 @@ export class GetCustomer extends Component {
     }
     handleChange(event) {
         this.setState({ value: event.target.value });
+        switch (event.target.name) {
+            case 'name':
+                this.setState({ customer_name: event.target.value });
+                console.log('label1', this.state.customer_name);
+                break;
+            case 'address':
+                this.setState({ customer_address: event.target.value });
+                console.log('label2', this.state.customer_address);
+                break;
+            default:
+                break;
+        }
+
+
     }
     handleSubmit(event) {
         //alert("message" + this.state.value);
         event.preventDefault();
+        console.log(this.state.customer_name);
+        console.log(this.state.customer_address);
+        this.create();
         this.handleCloseCreate();
+
+    }
+    handleEditSubmit(event) {
+        //alert("message" + this.state.value);
+        this.update(this.state.model_id);
+        this.handleCloseEdit();
+
     }
 
 
-    //static renderCustomersTable(customers) {
-    //    return (
-    //        <table className='table'>
-    //            <thead>
-    //                <tr>
-    //                    <th>Name</th>
-    //                    <th>Address</th>
-    //                </tr>
-    //            </thead>
-    //            <tbody>
-    //                {customers.map(customer =>
-    //                    <tr key={customer.Id}>
-    //                        <td>{customer.Name}</td>
-    //                        <td>{customer.Address}</td>
-    //                    </tr>
-    //                )}
-    //            </tbody>
-    //        </table>
-    //    );
-    //}
-
     componentDidMount() {
-       this.loadData();
+        this.loadData();
     }
 
     loadData() {
@@ -87,18 +105,26 @@ export class GetCustomer extends Component {
 
     create() {
         console.log("create")
+        var url = "api/Customers/";
+        console.log(url);
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ "name": this.state.customer_name, "address": this.state.customer_address }), headers: { 'Content-type': 'application/json' }
+        })
+            //this.loadData();
+            .then(response => { if (response.ok) { this.loadData() } })
     }
     update(id) {
         //this.setState({ customers: { "id": 1, "name": "John", "address": "Avondale", "sales": [] } });
-                //ajax call logic
+        //ajax call logic
         var url = "api/Customers/" + id;
         console.log(url);
         fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({ "id": id, "name": "Hans", "address": "NewYork" }), headers: { 'Content-type': 'application/json' }
+            body: JSON.stringify({ "id": id, "name": this.state.customer_name, "address": this.state.customer_address }), headers: { 'Content-type': 'application/json' }
         })
-        //this.loadData();
-        .then(response => { if (response.ok) { this.loadData() } })
+            //this.loadData();
+            .then(response => { if (response.ok) { this.loadData() } })
     }
 
     delete(id) {
@@ -112,11 +138,11 @@ export class GetCustomer extends Component {
         })
             .then(response => {
                 this.setState({ delete_model_open: false });
-                this.loadData();    
+                this.loadData();
             }).catch(error => {
                 console.log('There has been a problem with your fetch operation: ', error.message)
-        })
-        
+            })
+
     }
 
     render() {
@@ -125,33 +151,55 @@ export class GetCustomer extends Component {
         let tableData = null;
 
         let newbtn = null;
-        let testbtn = null;
+        let something = '';
+        let options = [
+            { key: 1, text: '10', value: 10 },
+            { key: 2, text: '20', value: 20 },
+            { key: 3, text: '30', value: 30 },
+        ]
 
-        newbtn = 
+        const {
+            activePage,
+            boundaryRange,
+            siblingRange,
+            showEllipsis,
+            showFirstAndLastNav,
+            showPreviousAndNextNav,
+            totalPages,
+        } = this.state
+
+        newbtn =
             <Modal
                 trigger={<Button primary content="New Customer" onClick={this.handleOpenCreate} />}
                 open={this.state.create_model_open}
                 onClose={this.handleCloseCreate}
+                size={"tiny"}
             >
+                <Modal.Header>Create customer</Modal.Header>
                 <Modal.Content>
-                    <p>
-                        Please upload a valid file.
-                </p>
-                <Form>
-                    <Form.Field>
-                        <label>NAME</label>
-                        <input placeholder='Name' />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>ADDRESS</label>
-                        <input placeholder='Address' />
-                    </Form.Field>
-                    <Button color='black' content="cancel" onClick={this.handleCloseCreate} />
-                    <Button color='red' content="delete" icon="times" labelPosition="right" onClick={this.handleSubmit} /> 
-                </Form>
+                    <Form>
+                        <Form.Field>
+                            <label>NAME</label>
+                            <Form.Input
+                                placeholder="Name"
+                                name='name'
+                                onChange={this.handleChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>ADDRESS</label>
+                            <Form.Input
+                                placeholder="Address"
+                                name='address'
+                                onChange={this.handleChange}
+                            />
+                        </Form.Field>
+
+                    </Form>
                 </Modal.Content>
                 <Modal.Actions>
-
+                    <Button color='black' content="cancel" onClick={this.handleCloseCreate} />
+                    <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleSubmit} />
                 </Modal.Actions>
             </Modal>
 
@@ -162,22 +210,37 @@ export class GetCustomer extends Component {
                     <td className="four wide">{customer.address}</td>
                     <td className="four wide">
                         <Modal
-                            trigger={<Button color='yellow' content="EDIT" icon="edit"/>}
-                            basic size='small'>
-                            <Header icon='archive' content='Archive Old Messages' />
+                            trigger={<Button color='yellow' content="EDIT" icon="edit" onClick={this.handleOpenEdit.bind(this, customer.id)} />}
+                            open={this.state.edit_model_open}
+                            onClose={this.handleCloseEdit}
+                            size={"tiny"}
+
+                        >
+                            <Modal.Header>Edit customer</Modal.Header>
                             <Modal.Content>
-                                <p>
-                                    Your inbox is getting full, would you like us to enable automatic
-                                    archiving of old messages?
-                                </p>
+                                <Form>
+                                    <Form.Field>
+                                        <label>NAME</label>
+                                        <Form.Input
+                                            placeholder="Name"
+                                            name='name'
+                                            onChange={this.handleChange}
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label>ADDRESS</label>
+                                        <Form.Input
+                                            placeholder="Address"
+                                            name='address'
+                                            onChange={this.handleChange}
+                                        />
+                                    </Form.Field>
+
+                                </Form>
                             </Modal.Content>
                             <Modal.Actions>
-                                <Button basic color='red' inverted>
-                                    <Icon name='remove' /> No
-                                </Button>
-                                <Button color='green' inverted>
-                                    <Icon name='checkmark' /> Yes
-                                </Button>
+                                <Button color='black' content="cancel" onClick={this.handleCloseEdit} />
+                                <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleEditSubmit.bind(this, customer.id)} />
                             </Modal.Actions>
                         </Modal>
                     </td>
@@ -202,12 +265,10 @@ export class GetCustomer extends Component {
             )
         }
         return (
-            <React.Fragment>
-                {testbtn}
-                <div>
-                    {newbtn}
-                    <br></br>
-                    <br></br>
+            <div>
+                {newbtn}
+                <br></br>
+                <br></br>
                 <table className="ui celled striped table">
                     <thead>
                         <tr>
@@ -220,10 +281,27 @@ export class GetCustomer extends Component {
                     <tbody>
                         {tableData}
                     </tbody>
-                    </table>
-                </div>
-            </React.Fragment>
-        )     
+                </table>
+                                <Dropdown id="mydropdown" options={options} search selection defaultSearchQuery="10" />
+                <Pagination
+                    activePage={activePage}
+                    boundaryRange={boundaryRange}
+                    onPageChange={this.handlePaginationChange}
+                    size='mini'
+                    siblingRange={siblingRange}
+                    totalPages={totalPages}
+                    // Heads up! All items are powered by shorthands, if you want to hide one of them, just pass `null` as value
+                    ellipsisItem={showEllipsis ? undefined : null}
+                    firstItem={showFirstAndLastNav ? undefined : null}
+                    lastItem={showFirstAndLastNav ? undefined : null}
+                    prevItem={showPreviousAndNextNav ? undefined : null}
+                    nextItem={showPreviousAndNextNav ? undefined : null}
+                    color='blue'
+                    inverted={true}
+                    floated='right'
+                />
+            </div>
+        )
 
     }
 }

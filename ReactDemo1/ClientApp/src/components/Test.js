@@ -1,94 +1,93 @@
 ﻿import React, { Component } from 'react';
 import { Button, Icon, Label, Message, Form, Menu, Header, Modal } from 'semantic-ui-react';
+const scaleNames = {
+    c: 'Celsius',
+    f: 'Fahrenheit'
+};
 
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if (Number.isNaN(input)) {
+        return '';
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+
+function BoilingVerdict(props) {
+    if (props.celsius >= 100) {
+        return <p>The water would boil.</p>;
+    }
+    return <p>The water would not boil.</p>;
+}
 export class Test extends Component {
     displayName = Test.name
 
     constructor(props) {
         super(props);
-        this.state = { customers: [], };
-        this.loadData = this.loadData.bind(this);
-        this.update = this.update.bind(this);
-        this.delete = this.delete.bind(this);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+        this.state = { temperature: '', scale: 'c' };
+    }
+    handleCelsiusChange(temperature) {
+        this.setState({ scale: 'c', temperature });
     }
 
-    //static renderCustomersTable(customers) {
-    //    return (
-    //        <table className='table'>
-    //            <thead>
-    //                <tr>
-    //                    <th>Name</th>
-    //                    <th>Address</th>
-    //                </tr>
-    //            </thead>
-    //            <tbody>
-    //                {customers.map(customer =>
-    //                    <tr key={customer.Id}>
-    //                        <td>{customer.Name}</td>
-    //                        <td>{customer.Address}</td>
-    //                    </tr>
-    //                )}
-    //            </tbody>
-    //        </table>
-    //    );
-    //}
-
-    componentDidMount() {
-        this.loadData();
+    handleFahrenheitChange(temperature) {
+        this.setState({ scale: 'f', temperature });
     }
 
-    loadData() {
+
+    render() {
+        const scale = this.state.scale;
+        const temperature = this.state.temperature;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+        return (
+            <div>
+            < TemperatureInput
+                scale="c"
+                temperature={celsius}
+                onTemperatureChange={this.handleCelsiusChange} />
+            <TemperatureInput
+                scale="f"
+                temperature={fahrenheit}
+                onTemperatureChange={this.handleFahrenheitChange} />
+            <BoilingVerdict
+                celsius={parseFloat(celsius)} /> 
+             </div>
+            );
+    }
+}
+
+class TemperatureInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    update(id) {
-        //ajax call logic
-    }
-
-    delete(id) {
-        //ajax call logic
+    handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);
     }
 
     render() {
-        let customers = this.state.customers;
-
-        let tableData = null;
-
-        if (customers != "") {
-            tableData = customers.map(customer =>
-                <tr key={customer.id}>
-                    <td className="two wide">{customer.name}</td>
-                    <td className="ten wide">{customer.address}</td>
-                    <td className="four wide">
-                        <i className="outline write icon" onClick={
-                            this.update.bind(this, customer.Id)}></i>
-                        <i className="remove icon" onClick=
-                            {this.delete.bind(this, customer.Id)}></i>
-                    </td>
-                </tr>
-            )
-        }
+        const temperature = this.props.temperature;
+        const scale = this.props.scale;
         return (
-            <Modal trigger={<Button>Basic Modal</Button>} basic size='small'>
-                <Header icon='archive' content='Archive Old Messages' />
-                <Modal.Content>
-                    <p>
-                        Your inbox is getting full, would you like us to enable automatic
-                        archiving of old messages?
-      </p>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button basic color='red' inverted>
-                        <Icon name='remove' /> No
-      </Button>
-                    <Button color='green' inverted>
-                        <Icon name='checkmark' /> Yes
-      </Button>
-                </Modal.Actions>
-            </Modal>
-
-
-
-            )
-            
+            <fieldset>
+                <legend>Enter temperature in {scaleNames[scale]}:</legend>
+                <input value={temperature}
+                    onChange={this.handleChange} />
+            </fieldset>
+        );
     }
 }

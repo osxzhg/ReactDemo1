@@ -9,14 +9,15 @@ export class GetCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customers: [], model_id: null, value: '', customer_name: '', customer_address: '',
+            customers: [], begin: 0, end:2,
+            model_id: null, value: '', customer_name: '', customer_address: '',
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
             showEllipsis: false,
             showFirstAndLastNav: false,
             showPreviousAndNextNav: false,
-            totalPages: 1,
+            totalPages: 5,
             itemPerPage: 10
         };
         this.loadData = this.loadData.bind(this);
@@ -100,7 +101,11 @@ export class GetCustomer extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ customers: data });
+                this.setState({ totalPages: Math.ceil(data.length /2) })
             });
+        //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
+        console.log(this.state.totalPages);
+        //this.setState({ totalPages: Math.ceil(this.state.customers.length / 2) });
     }
 
     create() {
@@ -203,8 +208,9 @@ export class GetCustomer extends Component {
                 </Modal.Actions>
             </Modal>
 
-        if (customers != "") {
-            tableData = customers.map(customer =>
+        let customerData = this.state.customers.slice(this.state.begin, this.state.end);
+        if (customerData != "") {
+            tableData = customerData.map(customer =>
                 <tr key={customer.id}>
                     <td className="four wide">{customer.name}</td>
                     <td className="four wide">{customer.address}</td>

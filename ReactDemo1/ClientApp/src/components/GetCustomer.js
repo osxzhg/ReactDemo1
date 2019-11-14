@@ -18,7 +18,8 @@ export class GetCustomer extends Component {
             showFirstAndLastNav: false,
             showPreviousAndNextNav: false,
             totalPages: 5,
-            itemPerPage: 10
+            itemPerPage: 3,
+            totalItems: 0
         };
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
@@ -33,6 +34,7 @@ export class GetCustomer extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleEditSubmit = this.handleEditSubmit.bind(this);
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
@@ -89,6 +91,11 @@ export class GetCustomer extends Component {
         this.handleCloseEdit();
 
     }
+    handleDropdownChange(event,data) {
+        this.setState({itemPerPage: data.value})
+        console.log(data.value);
+        alert("message" + data.value);
+    }
 
 
     componentDidMount() {
@@ -101,10 +108,9 @@ export class GetCustomer extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ customers: data });
-                this.setState({ totalPages: Math.ceil(data.length /2) })
+                this.setState({ totalItems: Math.ceil(data.length) })
             });
         //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
-        console.log(this.state.totalPages);
         //this.setState({ totalPages: Math.ceil(this.state.customers.length / 2) });
     }
 
@@ -155,14 +161,15 @@ export class GetCustomer extends Component {
 
         let tableData = null;
 
-        let newbtn = null;
+        let newBtn = null;
+        let pageBtn = null;
         let something = '';
         let options = [
-            { key: 1, text: '10', value: 10 },
-            { key: 2, text: '20', value: 20 },
-            { key: 3, text: '30', value: 30 },
+            { key: 1, text: '10', value: '10' },
+            { key: 2, text: '2', value: '2' },
+            { key: 3, text: '3', value: '3' },
         ]
-
+        let totalPages = 1;
         const {
             activePage,
             boundaryRange,
@@ -170,10 +177,10 @@ export class GetCustomer extends Component {
             showEllipsis,
             showFirstAndLastNav,
             showPreviousAndNextNav,
-            totalPages,
+            totalItems
         } = this.state
 
-        newbtn =
+        newBtn =
             <Modal
                 trigger={<Button primary content="New Customer" onClick={this.handleOpenCreate} />}
                 open={this.state.create_model_open}
@@ -207,8 +214,13 @@ export class GetCustomer extends Component {
                     <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleSubmit} />
                 </Modal.Actions>
             </Modal>
-
-        let customerData = this.state.customers.slice(this.state.begin, this.state.end);
+        console.log(this.state.begin)
+        console.log(this.state.itemPerPage)
+        let customerData = this.state.customers.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
+        totalPages = totalItems / this.state.itemPerPage;
+        pageBtn =
+            <Dropdown id="mydropdown" options={options} selection 
+                onChange={this.handleDropdownChange} />
         if (customerData != "") {
             tableData = customerData.map(customer =>
                 <tr key={customer.id}>
@@ -272,7 +284,7 @@ export class GetCustomer extends Component {
         }
         return (
             <div>
-                {newbtn}
+                {newBtn}
                 <br></br>
                 <br></br>
                 <table className="ui celled striped table">
@@ -288,7 +300,10 @@ export class GetCustomer extends Component {
                         {tableData}
                     </tbody>
                 </table>
-                                <Dropdown id="mydropdown" options={options} search selection defaultSearchQuery="10" />
+                {pageBtn}
+
+
+
                 <Pagination
                     activePage={activePage}
                     boundaryRange={boundaryRange}

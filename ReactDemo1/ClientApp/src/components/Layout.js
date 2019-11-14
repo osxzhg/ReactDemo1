@@ -41,10 +41,10 @@ export class Layout extends Component {
                     </Menu.Item>
                 </Menu>
                
-                <div id="content" class="basic ui segment">
+                <div id="content" className="basic ui segment">
                     {this.props.children}
                 </div>
-                <div class="footer">
+                <div className="footer">
                     <hr />
                     &copy; 2018 - Zhiguang Xu
                  </div>

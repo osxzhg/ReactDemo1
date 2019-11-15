@@ -165,9 +165,9 @@ export class GetCustomer extends Component {
         let pageBtn = null;
         let something = '';
         let options = [
-            { key: 1, text: '10', value: '10' },
-            { key: 2, text: '2', value: '2' },
-            { key: 3, text: '3', value: '3' },
+            { key: 1, text: '10', value: 10 },
+            { key: 2, text: '2', value: 2 },
+            { key: 3, text: '3', value: 3 },
         ]
         let totalPages = 1;
         const {
@@ -219,7 +219,7 @@ export class GetCustomer extends Component {
         let customerData = this.state.customers.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
         totalPages = totalItems / this.state.itemPerPage;
         pageBtn =
-            <Dropdown id="mydropdown" options={options} selection 
+            <Dropdown id="mydropdown" options={options} selection defaultValue={this.state.itemPerPage}
                 onChange={this.handleDropdownChange} />
         if (customerData != "") {
             tableData = customerData.map(customer =>

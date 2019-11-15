@@ -27,28 +27,29 @@ export class Layout extends Component {
         return (
 
 
-            <div>
-                <Menu inverted fixed="top" >
-                    <Menu.Item header>React</Menu.Item>
-                    <Menu.Item as={Link} name='customers' to='/getcustomer'>
-                        Customers
+            <div className="sticky-wrap">
+                <div class="sticky-content">
+                    <Menu inverted fixed="top" >
+                        <Menu.Item header>React</Menu.Item>
+                        <Menu.Item as={Link} name='customers' to='/getcustomer'>
+                            Customers
                      </Menu.Item>
-                    <Menu.Item as={Link} name='products' to='/test'>
-                        Products
+                        <Menu.Item as={Link} name='products' to='/test'>
+                            Products
                     </Menu.Item>
-                    <Menu.Item as={Link} name='store' to='store'>
-                        Stores
+                        <Menu.Item as={Link} name='store' to='store'>
+                            Stores
                     </Menu.Item>
-                </Menu>
-               
-                <div id="content" className="basic ui segment">
-                    {this.props.children}
+                    </Menu>
+
+                    <div id="content" className="basic ui segment">
+                        {this.props.children}
+                    </div>
                 </div>
-                <div className="footer">
+                <div className="sticky-footer">
                     <hr />
                     &copy; 2018 - Zhiguang Xu
-                 </div>
-
+                </div>
             </div>
         );
     }

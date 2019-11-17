@@ -33,13 +33,16 @@ export class Layout extends Component {
                         <Menu.Item header>React</Menu.Item>
                         <Menu.Item as={Link} name='customers' to='/getcustomer'>
                             Customers
-                     </Menu.Item>
+                        </Menu.Item>
                         <Menu.Item as={Link} name='products' to='/getproduct'>
                             Products
-                    </Menu.Item>
+                        </Menu.Item>
                         <Menu.Item as={Link} name='stores' to='/getstore'>
                             Stores
-                    </Menu.Item>
+                        </Menu.Item>
+                        <Menu.Item as={Link} name='sales' to='/getsale'>
+                            Sales
+                        </Menu.Item>
                     </Menu>
 
                     <div id="content" className="basic ui segment">

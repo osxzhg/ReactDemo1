@@ -34,10 +34,10 @@ export class Layout extends Component {
                         <Menu.Item as={Link} name='customers' to='/getcustomer'>
                             Customers
                      </Menu.Item>
-                        <Menu.Item as={Link} name='products' to='/test'>
+                        <Menu.Item as={Link} name='products' to='/getproduct'>
                             Products
                     </Menu.Item>
-                        <Menu.Item as={Link} name='store' to='store'>
+                        <Menu.Item as={Link} name='stores' to='/getstore'>
                             Stores
                     </Menu.Item>
                     </Menu>

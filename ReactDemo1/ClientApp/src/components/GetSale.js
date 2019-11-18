@@ -64,22 +64,22 @@ export class GetSale extends Component {
     handleCloseDelete() {
         this.setState({ delete_model_open: false });
     }
-    handleChange(event,data) {
+    handleChange(event, data) {
         //console.log('event' + data.value)
         //console.log('name' + data.name)
 
         switch (data.name) {
             case 'Customer':
                 this.setState({ sale_customerid: data.value });
-                console.log('cus'+data.value);
+                console.log('cus' + data.value);
                 break;
             case 'Product':
                 this.setState({ sale_productid: data.value });
-                console.log('prod'+data.value)
+                console.log('prod' + data.value)
                 break;
             case 'Store':
                 this.setState({ sale_storeid: data.value });
-                console.log('store'+data.value)
+                console.log('store' + data.value)
                 break;
             default:
                 break;
@@ -112,9 +112,9 @@ export class GetSale extends Component {
         this.handleCloseEdit();
 
     }
-    handleDropdownChange(event,data) {
+    handleDropdownChange(event, data) {
         this.setState({ itemPerPage: data.value })
-        this.setState({ begin: Math.floor(this.state.begin / data.value)*data.value})
+        this.setState({ begin: Math.floor(this.state.begin / data.value) * data.value })
         //console.log(data.value);
         //alert("message" + data.value);
     }
@@ -173,7 +173,7 @@ export class GetSale extends Component {
         console.log(url);
         fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({ "id": id, "name": this.state.sale_name, "price": this.state.sale_price }), headers: { 'Content-type': 'application/json' }
+            body: JSON.stringify({ "id": id, "CustomerId": this.state.sale_customerid, "ProductId": this.state.sale_productid, "StoreId": this.state.sale_storeid, "DateSold": this.state.sale_date }), headers: { 'Content-type': 'application/json' }
         })
             //this.loadData();
             .then(response => { if (response.ok) { this.loadData() } })
@@ -244,41 +244,41 @@ export class GetSale extends Component {
                 <Modal.Content>
                     <Form>
                         <Form.Field>
-                        <label>Date sold</label>
-                        <Form.Input
-                            placeholder="Customer Name"
-                            name='DateSold'
-                            onChange={this.handleChange}
+                            <label>Date sold</label>
+                            <Form.Input
+                                placeholder="Customer Name"
+                                name='DateSold'
+                                onChange={this.handleChange}
                             />
                         </Form.Field>
                         <Form.Field>
                             <label>Customer</label>
                             <Form.Dropdown
                                 placeholder="Customer Name"
-                            name='Customer'
-                            selection
-                            options={options_customer}
-                            onChange={this.handleChange}
+                                name='Customer'
+                                selection
+                                options={options_customer}
+                                onChange={this.handleChange}
                             />
                         </Form.Field>
                         <Form.Field>
                             <label>Product</label>
                             <Form.Dropdown
                                 placeholder="Product Name"
-                            name='Product'
-                            selection
-                            options={options_product}
-                            onChange={this.handleChange}
+                                name='Product'
+                                selection
+                                options={options_product}
+                                onChange={this.handleChange}
                             />
                         </Form.Field>
                         <Form.Field>
                             <label>Store</label>
                             <Form.Dropdown
                                 placeholder="Store Name"
-                            name='Store'
-                            selection
-                            options={options_store}
-                            onChange={this.handleChange}
+                                name='Store'
+                                selection
+                                options={options_store}
+                                onChange={this.handleChange}
                             />
                         </Form.Field>
 
@@ -313,38 +313,44 @@ export class GetSale extends Component {
                             <Modal.Content>
                                 <Form>
                                     <Form.Field>
-                                        <label>Customer</label>
+                                        <label>Date sold</label>
                                         <Form.Input
-                                            placeholder="Customer"
-                                            name='customer'
+                                            placeholder="Customer Name"
+                                            name='DateSold'
+                                            defaultValue='Nick'
+                                            onChange={this.handleChange}
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label>Customer</label>
+                                        <Form.Dropdown
+                                            placeholder="Customer Name"
+                                            name='Customer'
+                                            selection
+                                            options={options_customer}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Product</label>
-                                        <Form.Input
-                                            placeholder="Product"
-                                            name='store'
+                                        <Form.Dropdown
+                                            placeholder="Product Name"
+                                            name='Product'
+                                            selection
+                                            options={options_product}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Store</label>
-                                        <Form.Input
-                                            placeholder="Store"
-                                            name='store'
+                                        <Form.Dropdown
+                                            placeholder="Store Name"
+                                            name='Store'
+                                            selection
+                                            options={options_store}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>
-                                    <Form.Field>
-                                        <label>Date Sold</label>
-                                        <Form.Input
-                                            placeholder="Date of Sold"
-                                            name='dateofsold'
-                                            onChange={this.handleChange}
-                                        />
-                                    </Form.Field>
-
                                 </Form>
                             </Modal.Content>
                             <Modal.Actions>

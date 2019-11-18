@@ -34,31 +34,31 @@ namespace ReactDemo1.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var customers = await _context.Products.FindAsync(id);
+            var products = await _context.Products.FindAsync(id);
 
-                if (customers == null)
+                if (products == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(customers);
+                return Ok(products);
         }
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducts([FromRoute] int id, [FromBody] Products customers)
+        public async Task<IActionResult> PutProducts([FromRoute] int id, [FromBody] Products products)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != customers.Id)
+            if (id != products.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customers).State = EntityState.Modified;
+            _context.Entry(products).State = EntityState.Modified;
 
             try
             {
@@ -81,17 +81,17 @@ namespace ReactDemo1.Controllers
 
         // POST: api/Products
         [HttpPost]
-        public async Task<IActionResult> PostProducts([FromBody] Products customers)
+        public async Task<IActionResult> PostProducts([FromBody] Products products)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Products.Add(customers);
+            _context.Products.Add(products);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProducts", new { id = customers.Id }, customers);
+            return CreatedAtAction("GetProducts", new { id = products.Id }, products);
         }
 
         // DELETE: api/Products/5
@@ -103,16 +103,16 @@ namespace ReactDemo1.Controllers
                 return BadRequest(ModelState);
             }
 
-            var customers = await _context.Products.FindAsync(id);
-            if (customers == null)
+            var products = await _context.Products.FindAsync(id);
+            if (products == null)
             {
                 return NotFound();
             }
 
-            _context.Products.Remove(customers);
+            _context.Products.Remove(products);
             await _context.SaveChangesAsync();
 
-            return Ok(customers);
+            return Ok(products);
         }
 
         private bool ProductsExists(int id)

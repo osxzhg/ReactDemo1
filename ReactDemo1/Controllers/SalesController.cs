@@ -20,9 +20,21 @@ namespace ReactDemo1.Controllers
         }
         // GET: api/Sales
         [HttpGet("[action]")]
-        public IEnumerable<Sales> Getsales()
+        public IEnumerable<SalesViewModel> Getsales()
         {
-            return _context.Sales;
+            var _sallst = _context.Sales.
+                Join(_context.Customers, s => s.CustomerId, c => c.Id,
+                (s, c) => new { s.Id, s.DateSold, s.ProductId, s.StoreId, CustomerName = c.Name }
+                ).ToList();
+            var _joincp = _sallst.
+                Join(_context.Products, s => s.ProductId, p => p.Id,
+                (s, p) => new { s.Id, s.DateSold, s.CustomerName, s.StoreId, ProductName = p.Name }
+                ).ToList();
+            var _joincps = _joincp.
+                Join(_context.Stores, s => s.StoreId, r => r.Id,
+                (s, r) => new SalesViewModel { Id = s.Id, DateSold = s.DateSold.ToString("dd MMM, yyyy"), CustomerName = s.CustomerName, ProductName = s.ProductName, StoreName = r.Name}
+                ).ToList();
+            return _joincps;
         }
         // GET: api/Sales/5
         [HttpGet("{id}")]

@@ -229,9 +229,9 @@ export class GetSale extends Component {
         if (saleData != "") {
             tableData = saleData.map(sale =>
                 <tr key={sale.id}>
-                    <td>{sale.Customers.Name}</td>
-                    <td>{sale.storeId}</td>
-                    <td>{sale.productId}</td>
+                    <td>{sale.customerName}</td>
+                    <td>{sale.storeName}</td>
+                    <td>{sale.productName}</td>
                     <td>{sale.dateSold}</td>
                     <td>
                         <Modal

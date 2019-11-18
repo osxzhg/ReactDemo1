@@ -9,8 +9,12 @@ export class GetSale extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sales: [], begin: 0, end:2,
-            model_id: null, value: '', sale_customerid: '', sale_storeid: '',
+            sales: [],
+            customers: [],
+            products: [],
+            stores: [],
+            begin: 0, end: 2,
+            model_id: null, value: '', sale_customerid: '', sale_storeid: '', sale_productid: '', sale_date: '',
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
@@ -60,16 +64,30 @@ export class GetSale extends Component {
     handleCloseDelete() {
         this.setState({ delete_model_open: false });
     }
-    handleChange(event) {
-        this.setState({ value: event.target.value });
-        switch (event.target.name) {
-            case 'name':
-                this.setState({ sale_customerid: event.target.value });
-                console.log('label1', this.state.sale_customerid);
+    handleChange(event,data) {
+        //console.log('event' + data.value)
+        //console.log('name' + data.name)
+
+        switch (data.name) {
+            case 'Customer':
+                this.setState({ sale_customerid: data.value });
+                console.log('cus'+data.value);
                 break;
-            case 'price':
-                this.setState({ sale_storeid: event.target.value });
-                console.log('label2', this.state.sale_customerid);
+            case 'Product':
+                this.setState({ sale_productid: data.value });
+                console.log('prod'+data.value)
+                break;
+            case 'Store':
+                this.setState({ sale_storeid: data.value });
+                console.log('store'+data.value)
+                break;
+            default:
+                break;
+        }
+        switch (event.target.name) {
+            case 'DateSold':
+                this.setState({ sale_date: event.target.value });
+                console.log('debug');
                 break;
             default:
                 break;
@@ -79,6 +97,10 @@ export class GetSale extends Component {
     }
     handleSubmit(event) {
         //alert("message" + this.state.value);
+        alert("customerid" + this.state.sale_customerid);
+        alert("productid" + this.state.sale_productid);
+        alert("storeid" + this.state.sale_storeid);
+        alert("date" + this.state.sale_date);
         event.preventDefault();
         this.create();
         this.handleCloseCreate();
@@ -108,6 +130,21 @@ export class GetSale extends Component {
 
     loadData() {
         //this.setState({ sales: [{ "id": 1, "name": "John", "price": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "price": "New Lynn", "sales": [] }]});
+        fetch('api/Customers/GetCustomers')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ customers: data })
+            });
+        fetch('api/Products/GetProducts')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ products: data })
+            });
+        fetch('api/Stores/GetStores')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ stores: data })
+            });
         fetch('api/Sales/GetSales')
             .then(response => response.json())
             .then(data => {
@@ -124,7 +161,7 @@ export class GetSale extends Component {
         console.log(url);
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify({ "name": this.state.sale_name, "price": this.state.sale_price }), headers: { 'Content-type': 'application/json' }
+            body: JSON.stringify({ "CustomerId": this.state.sale_customerid, "ProductId": this.state.sale_productid, "StoreId": this.state.sale_storeid, "DateSold": this.state.sale_date }), headers: { 'Content-type': 'application/json' }
         })
             //this.loadData();
             .then(response => { if (response.ok) { this.loadData() } })
@@ -162,6 +199,9 @@ export class GetSale extends Component {
 
     render() {
         let sales = this.state.sales;
+        let customers = this.state.customers;
+        let products = this.state.products;
+        let stores = this.state.stores;
 
         let tableData = null;
 
@@ -173,7 +213,12 @@ export class GetSale extends Component {
             { key: 2, text: '2', value: 2 },
             { key: 3, text: '3', value: 3 },
         ]
+        let options_customer = null;
+        let options_product = null;
+        let options_store = null;
         let totalPages = 1;
+        let saleData = this.state.sales.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
+        totalPages = totalItems / this.state.itemPerPage;
         const {
             activePage,
             boundaryRange,
@@ -183,6 +228,10 @@ export class GetSale extends Component {
             showPreviousAndNextNav,
             totalItems
         } = this.state
+
+        options_customer = customers.map(customer => ({ key: customer.id, text: customer.name, value: customer.id }));
+        options_product = products.map(product => ({ key: product.id, text: product.name, value: product.id }));
+        options_store = stores.map(store => ({ key: store.id, text: store.name, value: store.id }));
 
         newBtn =
             <Modal
@@ -195,19 +244,41 @@ export class GetSale extends Component {
                 <Modal.Content>
                     <Form>
                         <Form.Field>
+                        <label>Date sold</label>
+                        <Form.Input
+                            placeholder="Customer Name"
+                            name='DateSold'
+                            onChange={this.handleChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
                             <label>Customer</label>
-                            <Form.Input
-                                placeholder="Name"
-                                name='name'
-                                onChange={this.handleChange}
+                            <Form.Dropdown
+                                placeholder="Customer Name"
+                            name='Customer'
+                            selection
+                            options={options_customer}
+                            onChange={this.handleChange}
                             />
                         </Form.Field>
                         <Form.Field>
                             <label>Product</label>
-                            <Form.Input
-                                placeholder="Price"
-                                name='price'
-                                onChange={this.handleChange}
+                            <Form.Dropdown
+                                placeholder="Product Name"
+                            name='Product'
+                            selection
+                            options={options_product}
+                            onChange={this.handleChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Store</label>
+                            <Form.Dropdown
+                                placeholder="Store Name"
+                            name='Store'
+                            selection
+                            options={options_store}
+                            onChange={this.handleChange}
                             />
                         </Form.Field>
 
@@ -218,11 +289,8 @@ export class GetSale extends Component {
                     <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleSubmit} />
                 </Modal.Actions>
             </Modal>
-        console.log(this.state.begin)
-        console.log(this.state.itemPerPage)
 
-        let saleData = this.state.sales.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
-        totalPages = totalItems / this.state.itemPerPage;
+
         pageBtn =
             <Dropdown id="mydropdown" options={options} selection defaultValue={this.state.itemPerPage}
                 onChange={this.handleDropdownChange} />

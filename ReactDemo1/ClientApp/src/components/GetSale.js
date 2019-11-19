@@ -14,6 +14,7 @@ export class GetSale extends Component {
             customers: [],
             products: [],
             stores: [],
+            now: null,
             begin: 0, end: 2,
             model_id: null, value: '', sale_customerid: null, sale_storeid: null, sale_productid: null, sale_date: null,
             activePage: 1,
@@ -45,6 +46,8 @@ export class GetSale extends Component {
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
+        var d = new Date();
+        this.setState({ now: d.getMonth() + 1 +'/'+ d.getDate()+'/'+ d.getFullYear() });
     }
 
     handleCloseCreate() {
@@ -112,11 +115,9 @@ export class GetSale extends Component {
 
         //alert("message" + this.state.value);
         if (!this.state.sale_customerid) {
-            alert("f" + this.state.selected_sale.customerId);
             this.setState({ sale_customerid: this.state.selected_sale.customerId })
         }
         if (!this.state.sale_productid) {
-            alert("h" + this.state.selected_sale.productId);
             this.setState({ sale_productid: this.state.selected_sale.productId })
         }
         if (!this.state.sale_storeid) {
@@ -247,8 +248,7 @@ export class GetSale extends Component {
         let options_product = null;
         let options_store = null;
         let totalPages = 1;
-        let saleData = this.state.sales.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
-        totalPages = totalItems / this.state.itemPerPage;
+       
         const {
             activePage,
             boundaryRange,
@@ -278,7 +278,8 @@ export class GetSale extends Component {
                             <Form.Input
                                 placeholder="Customer Name"
                                 name='DateSold'
-                                onChange={this.handleChange}
+                            onChange={this.handleChange}
+                            defaultValue={this.state.now}
                             />
                         </Form.Field>
                         <Form.Field>
@@ -319,7 +320,8 @@ export class GetSale extends Component {
                     <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleSubmit} />
                 </Modal.Actions>
             </Modal>
-
+        let saleData = this.state.sales.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
+        totalPages = totalItems / this.state.itemPerPage;
 
         pageBtn =
             <Dropdown id="mydropdown" options={options} selection defaultValue={this.state.itemPerPage}

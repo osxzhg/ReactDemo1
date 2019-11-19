@@ -14,5 +14,8 @@ namespace ReactDemo1.Models
         public string ProductName { get; set; }
         public string StoreName { get; set; }
         public string DateSold { get; set; }
+        public int ProductId { get; set; }
+        public int StoreId { get; set; }
+        public int CustomerId { get; set; }
     }
 }

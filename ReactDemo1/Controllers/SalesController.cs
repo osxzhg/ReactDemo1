@@ -51,7 +51,14 @@ namespace ReactDemo1.Controllers
                     return NotFound();
                 }
 
-                return Ok(sales);
+            var customer = await _context.Customers.FindAsync(sales.CustomerId);
+            var product = await _context.Products.FindAsync(sales.ProductId);
+            var store = await _context.Stores.FindAsync(sales.StoreId);
+            var dateSold = sales.DateSold.ToString("MM/dd/yyyy");
+            var saleEntry = new SalesViewModel { Id = sales.Id, DateSold = dateSold, CustomerId=sales.CustomerId,ProductId=sales.ProductId, StoreId=sales.StoreId,
+                CustomerName = customer.Name, ProductName = product.Name, StoreName = store.Name };
+
+                return Ok(saleEntry);
         }
         // PUT: api/Sales/5
         [HttpPut("{id}")]

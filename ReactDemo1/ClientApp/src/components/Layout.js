@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
-import { NavMenu } from './NavMenu';
 import { Button, Icon, Label, Message, Form, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import './Layout.css'
@@ -9,18 +8,8 @@ import './Layout.css'
 export class Layout extends Component {
     constructor(props) {
         super(props);
-        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
-        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
-        this.state = { temperature: '', scale: 'c' };
     }
     displayName = Layout.name
-    handleCelsiusChange(temperature) {
-        this.setState({ scale: 'c', temperature });
-    }
-
-    handleFahrenheitChange(temperature) {
-        this.setState({ scale: 'f', temperature });
-    }
     render() {
 
 
@@ -30,7 +19,7 @@ export class Layout extends Component {
             <div className="sticky-wrap">
                 <div class="sticky-content">
                     <Menu inverted fixed="top" >
-                        <Menu.Item header>React</Menu.Item>
+                        <Menu.Item header as={Link} name='home' to='/'>React</Menu.Item>
                         <Menu.Item as={Link} name='customers' to='/getcustomer'>
                             Customers
                         </Menu.Item>

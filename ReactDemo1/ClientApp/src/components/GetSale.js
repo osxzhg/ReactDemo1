@@ -10,11 +10,12 @@ export class GetSale extends Component {
         super(props);
         this.state = {
             sales: [],
+            selected_sale: {},
             customers: [],
             products: [],
             stores: [],
             begin: 0, end: 2,
-            model_id: null, value: '', sale_customerid: '', sale_storeid: '', sale_productid: '', sale_date: '',
+            model_id: null, value: '', sale_customerid: null, sale_storeid: null, sale_productid: null, sale_date: null,
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
@@ -26,6 +27,7 @@ export class GetSale extends Component {
             totalItems: 0
         };
         this.loadData = this.loadData.bind(this);
+        this.load = this.load.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
         this.create = this.create.bind(this);
@@ -51,6 +53,7 @@ export class GetSale extends Component {
     handleOpenEdit(i) {
         this.setState({ edit_model_open: true });
         this.setState({ model_id: i })
+        this.load(i);
     }
 
     handleCloseEdit() {
@@ -65,21 +68,18 @@ export class GetSale extends Component {
         this.setState({ delete_model_open: false });
     }
     handleChange(event, data) {
-        //console.log('event' + data.value)
-        //console.log('name' + data.name)
+        console.log('event' + data.value)
+        console.log('name' + data.name)
 
         switch (data.name) {
             case 'Customer':
                 this.setState({ sale_customerid: data.value });
-                console.log('cus' + data.value);
                 break;
             case 'Product':
                 this.setState({ sale_productid: data.value });
-                console.log('prod' + data.value)
                 break;
             case 'Store':
                 this.setState({ sale_storeid: data.value });
-                console.log('store' + data.value)
                 break;
             default:
                 break;
@@ -87,7 +87,6 @@ export class GetSale extends Component {
         switch (event.target.name) {
             case 'DateSold':
                 this.setState({ sale_date: event.target.value });
-                console.log('debug');
                 break;
             default:
                 break;
@@ -97,17 +96,36 @@ export class GetSale extends Component {
     }
     handleSubmit(event) {
         //alert("message" + this.state.value);
-        alert("customerid" + this.state.sale_customerid);
-        alert("productid" + this.state.sale_productid);
-        alert("storeid" + this.state.sale_storeid);
-        alert("date" + this.state.sale_date);
+        //alert("customerid" + this.state.sale_customerid);
+        //alert("productid" + this.state.sale_productid);
+        //alert("storeid" + this.state.sale_storeid);
+        //alert("date" + this.state.sale_date);
         event.preventDefault();
         this.create();
         this.handleCloseCreate();
 
     }
     handleEditSubmit(event) {
+        //alert("message" + this.state.sale_customerid);
+        //alert("message" + this.state.sale_productid);
+        //alert("message" + this.state.sale_storeid);
+
         //alert("message" + this.state.value);
+        if (!this.state.sale_customerid) {
+            alert("f" + this.state.selected_sale.customerId);
+            this.setState({ sale_customerid: this.state.selected_sale.customerId })
+        }
+        if (!this.state.sale_productid) {
+            alert("h" + this.state.selected_sale.productId);
+            this.setState({ sale_productid: this.state.selected_sale.productId })
+        }
+        if (!this.state.sale_storeid) {
+            this.setState({ sale_storeid: this.state.selected_sale.storeId })
+        }
+        //if (!this.state.sale_date) {
+        //    this.setState({ sale_date: this.state.selected_sale.DateSold })
+        //}
+        
         this.update(this.state.model_id);
         this.handleCloseEdit();
 
@@ -154,7 +172,14 @@ export class GetSale extends Component {
         //this.setState({ sales: [{ "id": 1, "name": "John", "price": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "price": "New Lynn", "sales": [] }]});
         //this.setState({ totalPages: Math.ceil(this.state.sales.length / 2) });
     }
+    load(id) {
+        fetch('api/Sales/'+id)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ selected_sale: data });
+            });
 
+    }
     create() {
         console.log("create")
         var url = "api/Sales/";
@@ -170,10 +195,15 @@ export class GetSale extends Component {
         //this.setState({ sales: { "id": 1, "name": "John", "price": "Avondale", "sales": [] } });
         //ajax call logic
         var url = "api/Sales/" + id;
-        console.log(url);
+        var sale_customerid = this.state.sale_customerid ? this.state.sale_customerid : this.state.selected_sale.customerId;
+        var sale_productid = this.state.sale_productid ? this.state.sale_productid : this.state.selected_sale.productId;
+        var sale_storeid = this.state.sale_storeid ? this.state.sale_storeid : this.state.selected_sale.storeId;
+        var sale_date = this.state.sale_date ? this.state.sale_date : this.state.selected_sale.dateSold;
+        //console.log(url);
+        //console.log({ "id": id, "CustomerId": sale_customerid, "ProductId": sale_productid, "StoreId": sale_storeid, "DateSold": sale_date });
         fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({ "id": id, "CustomerId": this.state.sale_customerid, "ProductId": this.state.sale_productid, "StoreId": this.state.sale_storeid, "DateSold": this.state.sale_date }), headers: { 'Content-type': 'application/json' }
+            body: JSON.stringify({ "Id": id, "CustomerId": sale_customerid, "ProductId": sale_productid, "StoreId": sale_storeid, "DateSold": sale_date }), headers: { 'Content-type': 'application/json' }
         })
             //this.loadData();
             .then(response => { if (response.ok) { this.loadData() } })
@@ -181,9 +211,9 @@ export class GetSale extends Component {
 
     delete(id) {
         //ajax call logic
-        console.log("delete");
+        //console.log("delete");
         var url = "api/Sales/" + id;
-        console.log(url);
+       //console.log(url);
         fetch(url, {
             method: 'DELETE',
             headers: { 'Content-type': 'application/json' }
@@ -317,14 +347,14 @@ export class GetSale extends Component {
                                         <Form.Input
                                             placeholder="Customer Name"
                                             name='DateSold'
-                                            defaultValue='Nick'
+                                            defaultValue={this.state.selected_sale.dateSold}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Customer</label>
                                         <Form.Dropdown
-                                            placeholder="Customer Name"
+                                            placeholder={this.state.selected_sale.customerName}
                                             name='Customer'
                                             selection
                                             options={options_customer}
@@ -334,7 +364,7 @@ export class GetSale extends Component {
                                     <Form.Field>
                                         <label>Product</label>
                                         <Form.Dropdown
-                                            placeholder="Product Name"
+                                            placeholder={this.state.selected_sale.productName}
                                             name='Product'
                                             selection
                                             options={options_product}
@@ -344,7 +374,7 @@ export class GetSale extends Component {
                                     <Form.Field>
                                         <label>Store</label>
                                         <Form.Dropdown
-                                            placeholder="Store Name"
+                                            placeholder={this.state.selected_sale.storeName}
                                             name='Store'
                                             selection
                                             options={options_store}

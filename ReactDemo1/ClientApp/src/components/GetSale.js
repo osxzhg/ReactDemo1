@@ -313,8 +313,8 @@ export class GetSale extends Component {
             tableData = saleData.map(sale =>
                 <tr key={sale.id}>
                     <td>{sale.customerName}</td>
-                    <td>{sale.storeName}</td>
                     <td>{sale.productName}</td>
+                    <td>{sale.storeName}</td>
                     <td>{sale.dateSold}</td>
                     <td>
                         <Modal

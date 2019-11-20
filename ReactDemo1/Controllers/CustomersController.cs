@@ -36,12 +36,12 @@ namespace ReactDemo1.Controllers
             }
             var customers = await _context.Customers.FindAsync(id);
 
-                if (customers == null)
-                {
-                    return NotFound();
-                }
+            if (customers == null)
+            {
+                return NotFound();
+            }
 
-                return Ok(customers);
+            return Ok(customers);
         }
 
         // PUT: api/Customers/5
@@ -108,10 +108,13 @@ namespace ReactDemo1.Controllers
             {
                 return NotFound();
             }
-
+            var connectedSale = _context.Sales.Where(s => s.CustomerId == id).Count();
+            if (connectedSale != 0)
+            {
+                return Conflict(new { errorMessage="Linked Sales exist led to failed deleteing" });
+            }
             _context.Customers.Remove(customers);
             await _context.SaveChangesAsync();
-
             return Ok(customers);
         }
 

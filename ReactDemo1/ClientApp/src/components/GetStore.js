@@ -19,7 +19,8 @@ export class GetStore extends Component {
             showPreviousAndNextNav: false,
             totalPages: 5,
             itemPerPage: 3,
-            totalItems: 0
+            totalItems: 0,
+            conflict: false
         };
         this.loadData = this.loadData.bind(this);
         this.update = this.update.bind(this);
@@ -36,6 +37,10 @@ export class GetStore extends Component {
         this.handleEditSubmit = this.handleEditSubmit.bind(this);
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handlePaginationChange = this.handlePaginationChange.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+    }
+    handleClose() {
+        this.setState({ conflict: false });
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
@@ -159,8 +164,11 @@ export class GetStore extends Component {
             .then(response => {
                 this.setState({ delete_model_open: false });
                 this.loadData();
+                if (response.status == 409) {
+                    this.setState({ conflict: true });
+                };
             }).catch(error => {
-                console.log('There has been a problem with your fetch operation: ', error.message)
+                alert('There has been a problem with your fetch operation: ', error.message)
             })
 
     }
@@ -227,7 +235,7 @@ export class GetStore extends Component {
         console.log(this.state.itemPerPage)
 
         let storeData = this.state.stores.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
-        totalPages = totalItems / this.state.itemPerPage;
+        totalPages = Math.floor(totalItems / this.state.itemPerPage)+1;
         pageBtn =
             <Dropdown id="mydropdown" options={options} selection defaultValue={this.state.itemPerPage}
                 onChange={this.handleDropdownChange} />
@@ -296,6 +304,21 @@ export class GetStore extends Component {
         }
         return (
             <div>
+                <Modal
+                    open={this.state.conflict}
+                    onClose={this.handleClose}
+                    size={"tiny"}
+                >
+                    <Modal.Header>Failed to delete the store</Modal.Header>
+                    <Modal.Content>
+                        There are linked sales existing.
+                </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='red' onClick={this.handleClose} inverted>
+                            <Icon name='checkmark' /> Got it
+                     </Button>
+                    </Modal.Actions>
+                </Modal>
                 {newBtn}
                 <br></br>
                 <br></br>

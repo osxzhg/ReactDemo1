@@ -109,6 +109,12 @@ namespace ReactDemo1.Controllers
                 return NotFound();
             }
 
+            var connectedSale = _context.Sales.Where(s => s.ProductId == id).Count();
+            if (connectedSale != 0)
+            {
+                return Conflict(new { errorMessage = "Failed deleteing: linked sales exist" });
+            }
+
             _context.Products.Remove(products);
             await _context.SaveChangesAsync();
 

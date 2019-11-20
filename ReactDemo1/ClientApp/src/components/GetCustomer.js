@@ -19,7 +19,8 @@ export class GetCustomer extends Component {
             showPreviousAndNextNav: false,
             totalPages: 5,
             itemPerPage: 3,
-            totalItems: 0
+            totalItems: 0,
+            conflict: false
         };
         this.loadData = this.loadData.bind(this);
         this.load = this.load.bind(this);
@@ -28,6 +29,7 @@ export class GetCustomer extends Component {
         this.create = this.create.bind(this);
         this.handleOpenCreate = this.handleOpenCreate.bind(this);
         this.handleCloseCreate = this.handleCloseCreate.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.handleOpenDelete = this.handleOpenDelete.bind(this);
         this.handleCloseDelete = this.handleCloseDelete.bind(this);
         this.handleOpenEdit = this.handleOpenEdit.bind(this);
@@ -37,6 +39,9 @@ export class GetCustomer extends Component {
         this.handleEditSubmit = this.handleEditSubmit.bind(this);
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handlePaginationChange = this.handlePaginationChange.bind(this);
+    }
+    handleClose() {
+        this.setState({ conflict: false });
     }
     handleOpenCreate() {
         this.setState({ create_model_open: true });
@@ -159,6 +164,9 @@ export class GetCustomer extends Component {
             .then(response => {
                 this.setState({ delete_model_open: false });
                 this.loadData();
+                if (response.status == 409) {
+                    this.setState({ conflict: true });
+                };
             }).catch(error => {
                 console.log('There has been a problem with your fetch operation: ', error.message)
             })
@@ -172,7 +180,7 @@ export class GetCustomer extends Component {
 
         let newBtn = null;
         let pageBtn = null;
-        let something = '';
+        let delPopup = null;
         let options = [
             { key: 1, text: '4', value: 4 },
             { key: 2, text: '2', value: 2 },
@@ -188,7 +196,8 @@ export class GetCustomer extends Component {
             showPreviousAndNextNav,
             totalItems
         } = this.state
-
+        
+            
         newBtn =
             <Modal
                 trigger={<Button primary content="New Customer" onClick={this.handleOpenCreate} />}
@@ -292,6 +301,21 @@ export class GetCustomer extends Component {
         }
         return (
             <div>
+                <Modal
+                    open={this.state.conflict}
+                    onClose={this.handleClose}
+                    size={"tiny"}
+                >
+                    <Modal.Header>Failed to delete the customer</Modal.Header>
+                    <Modal.Content>
+                        There are linked sales existing.
+                </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='red' onClick={this.handleClose} inverted>
+                            <Icon name='checkmark' /> Got it
+                     </Button>
+                    </Modal.Actions>
+                </Modal>
                 {newBtn}
                 <br></br>
                 <br></br>

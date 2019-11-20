@@ -47,7 +47,7 @@ export class GetSale extends Component {
     handleOpenCreate() {
         this.setState({ create_model_open: true });
         var d = new Date();
-        this.setState({ now: d.getMonth() + 1 +'/'+ d.getDate()+'/'+ d.getFullYear() });
+        this.setState({ sale_date: d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear() });
     }
 
     handleCloseCreate() {
@@ -109,15 +109,6 @@ export class GetSale extends Component {
 
     }
     handleEditSubmit(event) {
-        //if (!this.state.sale_customerid) {
-        //    this.setState({ sale_customerid: this.state.selected_sale.customerId })
-        //}
-        //if (!this.state.sale_productid) {
-        //    this.setState({ sale_productid: this.state.selected_sale.productId })
-        //}
-        //if (!this.state.sale_storeid) {
-        //    this.setState({ sale_storeid: this.state.selected_sale.storeId })
-        //}
         this.update(this.state.model_id);
         this.handleCloseEdit();
 
@@ -169,6 +160,7 @@ export class GetSale extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ selected_sale: data });
+                this.setState({ sale_date: data.dateSold });
             });
 
     }
@@ -190,7 +182,7 @@ export class GetSale extends Component {
         var sale_customerid = this.state.sale_customerid ? this.state.sale_customerid : this.state.selected_sale.customerId;
         var sale_productid = this.state.sale_productid ? this.state.sale_productid : this.state.selected_sale.productId;
         var sale_storeid = this.state.sale_storeid ? this.state.sale_storeid : this.state.selected_sale.storeId;
-        var sale_date = this.state.sale_date ? this.state.sale_date : this.state.selected_sale.dateSold;
+        var sale_date = this.state.sale_date
         //console.log(url);
         //console.log({ "id": id, "CustomerId": sale_customerid, "ProductId": sale_productid, "StoreId": sale_storeid, "DateSold": sale_date });
         fetch(url, {
@@ -269,8 +261,8 @@ export class GetSale extends Component {
                             <Form.Input
                                 placeholder="Customer Name"
                                 name='DateSold'
-                            onChange={this.handleChange}
-                            defaultValue={this.state.now}
+                                onChange={this.handleChange}
+                                value={this.state.sale_date}
                             />
                         </Form.Field>
                         <Form.Field>

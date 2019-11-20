@@ -10,7 +10,7 @@ export class GetStore extends Component {
         super(props);
         this.state = {
             stores: [], begin: 0, end:2,
-            model_id: null, value: '', store_name: '', store_address: '',
+            model_id: null, value: '', store_name: null, store_address: null,
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
@@ -46,7 +46,8 @@ export class GetStore extends Component {
     }
     handleOpenEdit(i) {
         this.setState({ edit_model_open: true });
-        this.setState({ model_id: i })
+        this.setState({ model_id: i });
+        this.load(i);
     }
 
     handleCloseEdit() {
@@ -65,11 +66,9 @@ export class GetStore extends Component {
         switch (event.target.name) {
             case 'name':
                 this.setState({ store_name: event.target.value });
-                console.log('label1', this.state.store_name);
                 break;
             case 'address':
                 this.setState({ store_address: event.target.value });
-                console.log('label2', this.state.store_address);
                 break;
             default:
                 break;
@@ -80,8 +79,6 @@ export class GetStore extends Component {
     handleSubmit(event) {
         //alert("message" + this.state.value);
         event.preventDefault();
-        console.log(this.state.store_name);
-        console.log(this.state.store_address);
         this.create();
         this.handleCloseCreate();
 
@@ -110,17 +107,22 @@ export class GetStore extends Component {
     }
 
     loadData() {
-        //this.setState({ stores: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
         fetch('api/Stores/GetStores')
             .then(response => response.json())
             .then(data => {
                 this.setState({ stores: data });
                 this.setState({ totalItems: Math.ceil(data.length) })
             });
-        //this.setState({ stores: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
-        //this.setState({ totalPages: Math.ceil(this.state.stores.length / 2) });
     }
 
+    load(id) {
+        fetch('api/Stores/' + id)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ store_address: data.address });
+                this.setState({ store_name: data.name });
+            });
+    }
     create() {
         console.log("create")
         var url = "api/Stores/";
@@ -251,6 +253,7 @@ export class GetStore extends Component {
                                             placeholder="Name"
                                             name='name'
                                             onChange={this.handleChange}
+                                            value={this.state.store_name}
                                         />
                                     </Form.Field>
                                     <Form.Field>
@@ -258,6 +261,7 @@ export class GetStore extends Component {
                                         <Form.Input
                                             placeholder="Address"
                                             name='address'
+                                            value={this.state.store_address}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>

@@ -9,8 +9,8 @@ export class GetProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [], begin: 0, end:2,
-            model_id: null, value: '', product_name: '', product_price: '',
+            products: [],begin: 0, end:2,
+            model_id: null, value: '', product_name: null, product_price: null,
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
@@ -46,7 +46,8 @@ export class GetProduct extends Component {
     }
     handleOpenEdit(i) {
         this.setState({ edit_model_open: true });
-        this.setState({ model_id: i })
+        this.setState({ model_id: i });
+        this.load(i);
     }
 
     handleCloseEdit() {
@@ -65,11 +66,9 @@ export class GetProduct extends Component {
         switch (event.target.name) {
             case 'name':
                 this.setState({ product_name: event.target.value });
-                console.log('label1', this.state.product_name);
                 break;
             case 'price':
                 this.setState({ product_price: event.target.value });
-                console.log('label2', this.state.product_price);
                 break;
             default:
                 break;
@@ -120,6 +119,16 @@ export class GetProduct extends Component {
         //this.setState({ totalPages: Math.ceil(this.state.products.length / 2) });
     }
 
+    load(id) {
+        fetch('api/Products/' + id)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ product_price: data.price });
+                this.setState({ product_name: data.name });
+            });
+
+
+    }
     create() {
         console.log("create")
         var url = "api/Products/";
@@ -249,6 +258,7 @@ export class GetProduct extends Component {
                                         <Form.Input
                                             placeholder="Name"
                                             name='name'
+                                            value={this.state.product_name}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>
@@ -257,6 +267,7 @@ export class GetProduct extends Component {
                                         <Form.Input
                                             placeholder="Price"
                                             name='price'
+                                            value={this.state.product_price}
                                             onChange={this.handleChange}
                                         />
                                     </Form.Field>

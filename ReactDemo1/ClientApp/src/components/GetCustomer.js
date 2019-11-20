@@ -9,8 +9,8 @@ export class GetCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customers: [], begin: 0, end:2,
-            model_id: null, value: '', customer_name: '', customer_address: '',
+            customers: [], begin: 0, end: 2, selected_customer: {},
+            model_id: null, value: '', customer_name: null, customer_address: null,
             activePage: 1,
             boundaryRange: 1,
             siblingRange: 1,
@@ -22,6 +22,7 @@ export class GetCustomer extends Component {
             totalItems: 0
         };
         this.loadData = this.loadData.bind(this);
+        this.load = this.load.bind(this);
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
         this.create = this.create.bind(this);
@@ -46,7 +47,8 @@ export class GetCustomer extends Component {
     }
     handleOpenEdit(i) {
         this.setState({ edit_model_open: true });
-        this.setState({ model_id: i })
+        this.setState({ model_id: i });
+        this.load(i);
     }
 
     handleCloseEdit() {
@@ -54,7 +56,7 @@ export class GetCustomer extends Component {
     }
     handleOpenDelete(i) {
         this.setState({ delete_model_open: true });
-        this.setState({ model_id: i })
+        this.setState({ model_id: i });
     }
 
     handleCloseDelete() {
@@ -80,8 +82,6 @@ export class GetCustomer extends Component {
     handleSubmit(event) {
         //alert("message" + this.state.value);
         event.preventDefault();
-        console.log(this.state.customer_name);
-        console.log(this.state.customer_address);
         this.create();
         this.handleCloseCreate();
 
@@ -109,33 +109,38 @@ export class GetCustomer extends Component {
     }
 
     loadData() {
-        //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
         fetch('api/Customers/GetCustomers')
             .then(response => response.json())
             .then(data => {
                 this.setState({ customers: data });
                 this.setState({ totalItems: Math.ceil(data.length) })
             });
-        //this.setState({ customers: [{ "id": 1, "name": "John", "address": "Avondale", "sales": [] }, { "id": 2, "name": "Daisy", "address": "New Lynn", "sales": [] }]});
-        //this.setState({ totalPages: Math.ceil(this.state.customers.length / 2) });
+    }
+
+    load(id) {
+        
+
+        fetch('api/Customers/' + id)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ customer_address: data.address });
+                this.setState({ customer_name: data.name });
+            });
+       
+
     }
 
     create() {
-        console.log("create")
         var url = "api/Customers/";
-        console.log(url);
         fetch(url, {
             method: 'POST',
             body: JSON.stringify({ "name": this.state.customer_name, "address": this.state.customer_address }), headers: { 'Content-type': 'application/json' }
         })
-            //this.loadData();
             .then(response => { if (response.ok) { this.loadData() } })
     }
     update(id) {
-        //this.setState({ customers: { "id": 1, "name": "John", "address": "Avondale", "sales": [] } });
         //ajax call logic
         var url = "api/Customers/" + id;
-        console.log(url);
         fetch(url, {
             method: 'PUT',
             body: JSON.stringify({ "id": id, "name": this.state.customer_name, "address": this.state.customer_address }), headers: { 'Content-type': 'application/json' }
@@ -146,9 +151,7 @@ export class GetCustomer extends Component {
 
     delete(id) {
         //ajax call logic
-        console.log("delete");
         var url = "api/Customers/" + id;
-        console.log(url);
         fetch(url, {
             method: 'DELETE',
             headers: { 'Content-type': 'application/json' }
@@ -220,8 +223,6 @@ export class GetCustomer extends Component {
                     <Button color='green' content="create" icon="checkmark" labelPosition="right" onClick={this.handleSubmit} />
                 </Modal.Actions>
             </Modal>
-        console.log(this.state.begin)
-        console.log(this.state.itemPerPage)
 
         let customerData = this.state.customers.slice(this.state.begin, this.state.begin + this.state.itemPerPage);
         totalPages = totalItems / this.state.itemPerPage;
@@ -247,7 +248,7 @@ export class GetCustomer extends Component {
                                     <Form.Field>
                                         <label>NAME</label>
                                         <Form.Input
-                                            placeholder="Name"
+                                            value={this.state.customer_name}
                                             name='name'
                                             onChange={this.handleChange}
                                         />
@@ -255,7 +256,7 @@ export class GetCustomer extends Component {
                                     <Form.Field>
                                         <label>ADDRESS</label>
                                         <Form.Input
-                                            placeholder="Address"
+                                            value={this.state.customer_address}
                                             name='address'
                                             onChange={this.handleChange}
                                         />

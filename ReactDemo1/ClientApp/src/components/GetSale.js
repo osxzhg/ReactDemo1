@@ -109,24 +109,15 @@ export class GetSale extends Component {
 
     }
     handleEditSubmit(event) {
-        //alert("message" + this.state.sale_customerid);
-        //alert("message" + this.state.sale_productid);
-        //alert("message" + this.state.sale_storeid);
-
-        //alert("message" + this.state.value);
-        if (!this.state.sale_customerid) {
-            this.setState({ sale_customerid: this.state.selected_sale.customerId })
-        }
-        if (!this.state.sale_productid) {
-            this.setState({ sale_productid: this.state.selected_sale.productId })
-        }
-        if (!this.state.sale_storeid) {
-            this.setState({ sale_storeid: this.state.selected_sale.storeId })
-        }
-        //if (!this.state.sale_date) {
-        //    this.setState({ sale_date: this.state.selected_sale.DateSold })
+        //if (!this.state.sale_customerid) {
+        //    this.setState({ sale_customerid: this.state.selected_sale.customerId })
         //}
-        
+        //if (!this.state.sale_productid) {
+        //    this.setState({ sale_productid: this.state.selected_sale.productId })
+        //}
+        //if (!this.state.sale_storeid) {
+        //    this.setState({ sale_storeid: this.state.selected_sale.storeId })
+        //}
         this.update(this.state.model_id);
         this.handleCloseEdit();
 
